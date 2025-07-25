@@ -41,7 +41,7 @@ jobs:
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: deploy-staging
+    needs: manual-approval
     environment:
       name: Prod
     steps:
