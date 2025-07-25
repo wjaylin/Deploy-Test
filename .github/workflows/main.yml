@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  issues: write
+  contents: read
+
 jobs:
   deploy-staging:
     name: Deploy to Staging
@@ -20,15 +25,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-staging
     steps:
-      - uses: macnev2013/manual-approval@v1.0.18
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Request approval
+        uses: thomasvjoseph/manual-approval@v1.0.1
         with:
-          secret: ${{ github.TOKEN }}
-          approvers: wjaylin
-          minimum-approvals: 1
-          approval-wait: 600
-          issue-title: 'Manual Approval'
-          issue-body: |
-            "Issue Body"
+          INPUT_TITLE: "Manual Approval Request"
+          INPUT_BODY: "Please approve or reject by commenting 'yes' or 'no'."
+          INPUT_ASSIGNEES: "wjaylin"
+          INPUT_MIN_APPROVERS: 1
+          INPUT_TIMEOUT: 1440
+
 
   deploy-production:
     name: Deploy to Production
